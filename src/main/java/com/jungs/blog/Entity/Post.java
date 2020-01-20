@@ -22,5 +22,6 @@ public class Post {
     @Column(columnDefinition = "text")
     String content;
 
+    @Column(updatable = false)
     Date regDate;
 }

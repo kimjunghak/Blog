@@ -3,16 +3,15 @@ package com.jungs.blog.controller;
 import com.jungs.blog.Dao.PostDao;
 import com.jungs.blog.Entity.Post;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.jws.WebParam;
 import java.util.Date;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/post")
 public class PostController {
 
@@ -20,22 +19,23 @@ public class PostController {
     private PostDao postDao;
 
     @RequestMapping("/write")
-    public String write(Post post){
+    public Post write(Post post){
         post.setRegDate(new Date());
-        return "redirect:/post/" + postDao.save(post).getId();
+        Post postData = postDao.save(post);
+        return postData;
     }
 
     @RequestMapping("/list")
-    public String list(Model model){
+    public List<Post> list(Model model){
         List<Post> postList = postDao.findAll();
-        model.addAttribute("postList", postList);
-        return "blog";
+//        model.addAttribute("postList", postList);
+        return postList;
     }
 
     @RequestMapping("/{id}")
-    public String view(Model model, @PathVariable int id){
+    public int view(Model model, @PathVariable int id){
         Post post = postDao.findById(id).get();
-        model.addAttribute("post", post);
-        return "post" ;
+//        model.addAttribute("post", post);
+        return post.getId();
     }
 }
