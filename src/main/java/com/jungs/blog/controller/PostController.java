@@ -4,11 +4,10 @@ import com.jungs.blog.Dao.PostDao;
 import com.jungs.blog.Entity.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -20,7 +19,7 @@ public class PostController {
 
     @RequestMapping("/write")
     public Post write(Post post){
-        post.setRegDate(new Date());
+        post.setRegDate(LocalDateTime.now());
         Post postData = postDao.save(post);
         return postData;
     }
@@ -33,9 +32,28 @@ public class PostController {
     }
 
     @RequestMapping("/{id}")
-    public int view(Model model, @PathVariable int id){
+    public Post view(Model model, @PathVariable int id){
         Post post = postDao.findById(id).get();
 //        model.addAttribute("post", post);
-        return post.getId();
+        return post;
+    }
+
+    @RequestMapping("/{id}/delete")
+    public List<Post> delete(@PathVariable int id){
+        postDao.deleteById(id);
+        return postDao.findAll();
+    }
+
+    @GetMapping("/{id}/edit")
+    public Post edit(Model model, @PathVariable int id){
+        Post post = postDao.findById(id).get();
+//        model.addAttribute("post", post);
+        return post;
+    }
+
+    @PostMapping("/{id}/edit")
+    public List<Post> edit(@Valid Post post){
+        postDao.save(post);
+        return postDao.findAll();
     }
 }
